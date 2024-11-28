@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="login.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+    .btn-primary {
+        background-color: rgb(255, 2, 187); /* Custom pink color */
+        border-color: rgb(255, 2, 187); /* Match border color */
+    }
+
+    .btn-primary:hover {
+        background-color: rgb(200, 0, 150); /* Slightly darker shade on hover */
+        border-color: rgb(200, 0, 150);
+    }
+    </style>
+
 </head>
 
 <body>
@@ -53,11 +65,68 @@
         </form>
 
     </div>
+
     
+
+    <script>
+
+        document.getElementById('close_danger')?.addEventListener('click', function () {
+            document.getElementById('alert_danger_custom').style.display = 'none';
+        });
+
+        document.getElementById('close_success')?.addEventListener('click', function () {
+            document.getElementById('alert_success_custom').style.display = 'none';
+        });
+
+
+        document.getElementById('loginForm').addEventListener('submit', function () {
+            document.getElementById('alert_danger_custom').style.display = 'none';
+            document.getElementById('alert_success_custom').style.display = 'none';
+        });
+    </script>
+
 </body>
 
 </html>
 
+<?php
+$accounts = [
+    "admin" => [
+        "aj fonzie barawed" => password_hash("123", PASSWORD_DEFAULT),
+        
+    ],
+    "content_manager" => [
+        "aj fonzie barawed1" => password_hash("123", PASSWORD_DEFAULT),
+    ],
+    "system_user" => [
+       "aj fonzie barawed2" => password_hash("123", PASSWORD_DEFAULT),
+    ],
+];
 
+$alert = ''; 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $options = $_POST['options'] ?? '';
+    $email = $_POST['floatingInput'] ?? '';
+    $password = $_POST['floatingPassword'] ?? '';
 
+    function validateUser ($accounts, $userType, $email, $password) {
+        if (isset($accounts[$userType][$email]) && password_verify($password, $accounts[$userType][$email])) {
+            return true;
+        }
+        return false;
+    }
+
+    if (validateUser ($accounts, strtolower(str_replace(" ", "_", $options)), $email, $password)) {
+        $alert = 'success';
+    } else {
+        $alert = 'danger';
+    }
+}
+
+if ($alert === 'success') {
+    echo '<script>document.getElementById("alert_success_custom").style.display = "block";</script>';
+} elseif ($alert === 'danger') {
+    echo '<script>document.getElementById("alert_danger_custom").style.display = "block";</script>';
+}
+?>

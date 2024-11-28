@@ -33,7 +33,72 @@
                 <button type="submit" name="checkout">CheckOut</button>
             </fieldset>
         </form>
-       
+
+        <?php
+        session_start();
+
+        if (isset($_POST['checkout'])) {
+            // Initialize variables
+            $products = isset($_POST['products']) ? $_POST['products'] : [];
+            $sizeDetails = isset($_POST['size']) ? explode(",", $_POST['size']) : ['Regular', 0];
+            $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
+
+            $sizeName = $sizeDetails[0];
+            $sizeSurcharge = intval($sizeDetails[1]);
+
+            $totalCost = 0;
+            $selectedProducts = [];
+
+            // Calculate the total cost of selected products
+            foreach ($products as $product) {
+                list($productName, $productPrice) = explode(",", $product);
+                $selectedProducts[] = $productName;
+                $totalCost += intval($productPrice);
+            }
+
+            // Apply quantity and size surcharge
+            $totalCost = ($totalCost + $sizeSurcharge) * $quantity;
+
+            // Store order summary in session
+            if (count($selectedProducts) > 0 && $quantity > 0) {
+                $_SESSION['order'][] = [
+                    'products' => $selectedProducts,
+                    'size' => $sizeName,
+                    'quantity' => $quantity,
+                    'totalCost' => $totalCost
+                ];
+            } else {
+                echo "<hr><b>No products selected or invalid quantity. Please try again.</b>";
+            }
+        }
+
+        // Display all orders from the session
+        if (isset($_SESSION['order']) && count($_SESSION['order']) > 0) {
+            echo "<hr><b>Order Summary History:</b><br>";
+            foreach ($_SESSION['order'] as $index => $order) {
+                echo "<b>Order " . ($index + 1) . ":</b><br>";
+                echo "Products: " . implode(", ", $order['products']) . "<br>";
+                echo "Size: " . htmlspecialchars($order['size']) . "<br>";
+                echo "Quantity: " . $order['quantity'] . "<br>";
+                echo "Total Cost: ₱" . $order['totalCost'] . "<br><br>";
+            }
+        }
+        ?>
+
+        <?php if (isset($_SESSION['order']) && count($_SESSION['order']) > 0): ?>
+            <form method="POST">
+                <button type="submit" name="newOrder">New Order</button>
+            </form>
+        <?php endif; ?>
+
+        <?php
+        // Handle "New Order" button click
+        if (isset($_POST['newOrder'])) {
+            session_destroy();
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        }
+        ?>
     </div>
 </body>
 </html>

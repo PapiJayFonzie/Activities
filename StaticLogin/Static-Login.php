@@ -77,3 +77,44 @@
 
 </html>
 
+<?php
+$accounts = [
+    "admin" => [
+        "aj fonzie barawed" => password_hash("123", PASSWORD_DEFAULT),
+        
+    ],
+    "content_manager" => [
+        "aj fonzie barawed1" => password_hash("123", PASSWORD_DEFAULT),
+    ],
+    "system_user" => [
+       "aj fonzie barawed2" => password_hash("123", PASSWORD_DEFAULT),
+    ],
+];
+
+$alert = ''; 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $options = $_POST['options'] ?? '';
+    $email = $_POST['floatingInput'] ?? '';
+    $password = $_POST['floatingPassword'] ?? '';
+
+    function validateUser ($accounts, $userType, $email, $password) {
+        if (isset($accounts[$userType][$email]) && password_verify($password, $accounts[$userType][$email])) {
+            return true;
+        }
+        return false;
+    }
+
+    if (validateUser ($accounts, strtolower(str_replace(" ", "_", $options)), $email, $password)) {
+        $alert = 'success';
+    } else {
+        $alert = 'danger';
+    }
+}
+
+if ($alert === 'success') {
+    echo '<script>document.getElementById("alert_success_custom").style.display = "block";</script>';
+} elseif ($alert === 'danger') {
+    echo '<script>document.getElementById("alert_danger_custom").style.display = "block";</script>';
+}
+?>

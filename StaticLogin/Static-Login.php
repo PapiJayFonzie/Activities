@@ -53,11 +53,27 @@
         </form>
 
     </div>
+
     
+
+    <script>
+
+        document.getElementById('close_danger')?.addEventListener('click', function () {
+            document.getElementById('alert_danger_custom').style.display = 'none';
+        });
+
+        document.getElementById('close_success')?.addEventListener('click', function () {
+            document.getElementById('alert_success_custom').style.display = 'none';
+        });
+
+
+        document.getElementById('loginForm').addEventListener('submit', function () {
+            document.getElementById('alert_danger_custom').style.display = 'none';
+            document.getElementById('alert_success_custom').style.display = 'none';
+        });
+    </script>
+
 </body>
 
 </html>
-
-
-
 

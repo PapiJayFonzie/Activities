@@ -23,10 +23,6 @@
 
     <div class="round-container text-center" id="cntnr">
 
-        <div class="mb-4">
-            <img src="blank.png" alt="Profile Picture" class="profile-pic">
-        </div>
-
         
         <form method="post" id="loginForm">
             <div class="mb-3">
@@ -51,7 +47,6 @@
 
             <button type="submit" class="btn btn-primary" name="sbtn">SIGN IN</button>
         </form>
-
     </div>
     
 </body>
